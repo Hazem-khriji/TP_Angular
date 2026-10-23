@@ -1,0 +1,18 @@
+<div class="container mt-3">
+    <h3>Calcul du Prix TTC</h3>
+
+    <label class="form-label">Prix unitaire</label>
+    <input type="number" class="form-control" [(ngModel)]="prix">
+    
+    <label class="form-label" mt-2>Quantité</label>
+    <input type="number" class="form-control" [(ngModel)]="quantite">
+
+    <label class="form-label" mt-2>TVA (%)</label>
+    <input type="number" class="form-control" [(ngModel)]="tva">
+
+    <hr/>
+    <p>Remise : {{remise() * 100}}%</p>
+    <p>Prix HT aprés remise: {{prixHT()}}</p>
+    <p><strong>Prix TTC : {{prixTtc()}}</strong></p>
+</div>
+
