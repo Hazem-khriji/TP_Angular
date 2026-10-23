@@ -1,18 +1,58 @@
-<div class="row">
-  <div class="col">
-    <ol class="list-group">
-      @for (todo of todos; track todo) {
-        <li class="list-group-item">
-          {{todo.name}} : {{todo.content}}
-          <i (click)="deleteTodo(todo)" class="fa fa-trash" aria-hidden="true"></i>
-        </li>
-      }
-    </ol>
+<div class="container mt-3">
+  <div class="row g-2 mb-3">
+    <div class="col">
+      <input type="text" class="form-control" placeholder="name" [(ngModel)]="name" />
+    </div>
+    <div class="col">
+      <input type="text" class="form-control" placeholder="content" [(ngModel)]="content" />
+    </div>
+    <div class="col-auto">
+      <button
+        class="btn btn-danger"
+        (click)="addTodo()"
+        [disabled]="!name().trim() || !content().trim()"
+      >
+        add
+      </button>
+    </div>
   </div>
-  <div class="col">
-    name: <input [(ngModel)]="todo.name" type="text" class="form-control">
-    content: <input [(ngModel)]="todo.content" type="text" class="form-control">
-    <button (click)="addTodo()" [disabled]="!todo.name.trim() || !todo.content.trim()"
-    class="btn btn-primary m-2">add</button>
+
+  <div class="row g-3">
+    @for (column of columns; track column.title) {
+      <div class="col-md-4">
+        <div class="p-2 rounded h-100" [class]="column.css">
+          <h5>{{ column.title }}</h5>
+
+          @for (todo of column.todos(); track todo.id) {
+            <div class="card mb-2">
+              <div class="card-body p-2">
+                <strong>{{ todo.name }}</strong> : {{ todo.content }}
+
+                <div class="d-flex gap-2 mt-2">
+                  <select
+                    class="form-select form-select-sm"
+                    [ngModel]="todo.status"
+                    (ngModelChange)="changeStatus(todo.id, $event)"
+                  >
+                    @for (status of statuses; track status) {
+                      <option [value]="status">{{ status }}</option>
+                    }
+                  </select>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="deleteTodo(todo.id)"
+                    aria-label="Supprimer"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-muted mb-0">Aucun todo</p>
+          }
+        </div>
+      </div>
+    }
   </div>
 </div>
