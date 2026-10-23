@@ -19,9 +19,10 @@ export class DetailsCvComponent implements OnInit {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
-  authService = inject(AuthService);
+  private authService = inject(AuthService);
 
   cv = signal<Cv | null>(null);
+  isAuthenticated = this.authService.isAuthenticated;
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];

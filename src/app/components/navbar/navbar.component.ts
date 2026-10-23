@@ -12,10 +12,11 @@ import { APP_ROUTES } from '../../../config/routes.config';
     imports: [RouterLinkActive, RouterLink]
 })
 export class NavbarComponent {
-  authService = inject(AuthService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
 
+  isAuthenticated = this.authService.isAuthenticated;
 
   logout() {
     this.authService.logout();
