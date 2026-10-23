@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
-import { Cv } from "../model/cv";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { catchError, of } from "rxjs";
 import { LoggerService } from "../../services/logger.service";
 import { ToastrService } from "ngx-toastr";
 import { CvService } from "../services/cv.service";
@@ -19,25 +20,22 @@ export class CvComponent {
   private toastr = inject(ToastrService);
   private cvService = inject(CvService);
 
-  cvs: Cv[] = [];
-  selectedCv: Cv | null = null;
-  /*   selectedCv: Cv | null = null; */
-  date = new Date();
-
-  constructor() {
-    this.cvService.getCvs().subscribe({
-      next: (cvs) => {
-        this.cvs = cvs;
-      },
-      error: () => {
-        this.cvs = this.cvService.getFakeCvs();
+  cvs = toSignal(
+    this.cvService.getCvs().pipe(
+      catchError(() => {
         this.toastr.error(`
           Attention!! Les données sont fictives, problème avec le serveur.
           Veuillez contacter l'admin.`);
-      },
-    });
+        return of(this.cvService.getFakeCvs());
+      })
+    ),
+    { initialValue: [] }
+  );
+  selectedCv = this.cvService.selectedCv;
+  date = new Date();
+
+  constructor() {
     this.logger.logger("je suis le cvComponent");
     this.toastr.info("Bienvenu dans notre CvTech");
-    this.cvService.selectCv$.subscribe((cv) => (this.selectedCv = cv));
   }
 }
