@@ -1,0 +1,27 @@
+<input
+  class="form-control"
+  type="text"
+  placeholder="Search products"
+  [(ngModel)]="search"
+/>
+
+<select class="form-control" [(ngModel)]="category">
+  <option value="">All</option>
+  @for (c of categories; track c) {
+    <option [value]="c">{{ c }}</option>
+  }
+</select>
+
+<section>
+  <button class="btn btn-danger" (click)="reset()">Reset</button>
+</section>
+
+<ul class="list-group">
+  @for (product of filteredProducts(); track product.name) {
+    <li class="list-group-item">
+      {{ product.name }} <small>({{ product.category }})</small>
+    </li>
+  } @empty {
+    <li class="list-group-item">Aucun produit</li>
+  }
+</ul>
