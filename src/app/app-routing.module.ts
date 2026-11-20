@@ -15,6 +15,7 @@ import { RhComponent } from "./optimizationPattern/rh/rh.component";
 import { TtcComponent } from "./components/ttc/ttc.component";
 import { CountryCurrencySelectorComponent } from "./tp2/currency-selector/country-currency-selector.component";
 import { ProductsFilterComponent } from "./tp2/products-filter/products-filter.component";
+import { MasterDetailsCvComponent } from "./cv/master-details-cv/master-details-cv.component";
 
 
 
@@ -26,6 +27,11 @@ const routes: Route[] = [
     component: CvComponent,
   },
   { path: "cv/add", component: AddCvComponent, canActivate: [AuthGuard] },
+  {
+    path: "cv/list",
+    component: MasterDetailsCvComponent,
+    children: [{ path: ":id", component: DetailsCvComponent }],
+  },
   { path: "cv/:id", component: DetailsCvComponent },
   {
     path: "",
