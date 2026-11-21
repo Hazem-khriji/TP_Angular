@@ -15,6 +15,7 @@ import { RhComponent } from "./optimizationPattern/rh/rh.component";
 import { TtcComponent } from "./components/ttc/ttc.component";
 import { CountryCurrencySelectorComponent } from "./tp2/currency-selector/country-currency-selector.component";
 import { ProductsFilterComponent } from "./tp2/products-filter/products-filter.component";
+import { AutocompleteComponent } from "./cv/autocomplete/autocomplete.component";
 
 
 
@@ -36,6 +37,7 @@ const routes: Route[] = [
       { path: "ttc", component: TtcComponent },
       { path: "currency", component: CountryCurrencySelectorComponent },
       { path: "products-filter", component: ProductsFilterComponent },
+      { path: "autocomplete", component: AutocompleteComponent },
 
     ],
   },

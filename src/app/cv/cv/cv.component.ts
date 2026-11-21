@@ -17,11 +17,9 @@ import { UpperCasePipe, DatePipe } from "@angular/common";
 export class CvComponent {
   private logger = inject(LoggerService);
   private toastr = inject(ToastrService);
-  private cvService = inject(CvService);
+  readonly cvService = inject(CvService);
 
   cvs: Cv[] = [];
-  selectedCv: Cv | null = null;
-  /*   selectedCv: Cv | null = null; */
   date = new Date();
 
   constructor() {
@@ -38,6 +36,5 @@ export class CvComponent {
     });
     this.logger.logger("je suis le cvComponent");
     this.toastr.info("Bienvenu dans notre CvTech");
-    this.cvService.selectCv$.subscribe((cv) => (this.selectedCv = cv));
   }
 }
