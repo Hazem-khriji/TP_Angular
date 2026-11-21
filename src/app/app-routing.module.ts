@@ -1,56 +1,124 @@
-import { NgModule } from "@angular/core";
+import { Injectable, NgModule } from "@angular/core";
 import { RouterModule, Route } from "@angular/router";
-import { TodoComponent } from "./todo/todo/todo.component";
-import { MiniWordComponent } from "./directives/mini-word/mini-word.component";
-import { ColorComponent } from "./components/color/color.component";
 import { FrontComponent } from "./templates/front/front.component";
 import { AdminComponent } from "./templates/admin/admin.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { NF404Component } from "./components/nf404/nf404.component";
 import { AuthGuard } from "./auth/guards/auth.guard";
-import { AddCvComponent } from "./cv/add-cv/add-cv.component";
-import { CvComponent } from "./cv/cv/cv.component";
-import { DetailsCvComponent } from "./cv/details-cv/details-cv.component";
-import { RhComponent } from "./optimizationPattern/rh/rh.component";
-import { TtcComponent } from "./components/ttc/ttc.component";
-import { CountryCurrencySelectorComponent } from "./tp2/currency-selector/country-currency-selector.component";
-import { ProductsFilterComponent } from "./tp2/products-filter/products-filter.component";
-import { AutocompleteComponent } from "./cv/autocomplete/autocomplete.component";
+import { Observable, of } from "rxjs";
+import { PreloadingStrategy } from "@angular/router";
 
-
+@Injectable({ providedIn: "root" })
+export class CvPreloadingStrategy implements PreloadingStrategy {
+  preload(route: Route, load: () => Observable<unknown>): Observable<unknown> {
+    return route.data?.["preload"] ? load() : of(null);
+  }
+}
 
 const routes: Route[] = [
   { path: "login", component: LoginComponent },
-  { path: "rh", component: RhComponent },
   {
     path: "cv",
-    component: CvComponent,
+    loadComponent: () =>
+      import("./cv/cv/cv.component").then((component) => component.CvComponent),
+    data: { preload: true },
   },
-  { path: "cv/add", component: AddCvComponent, canActivate: [AuthGuard] },
-  { path: "cv/:id", component: DetailsCvComponent },
+  {
+    path: "cv/add",
+    loadComponent: () =>
+      import("./cv/add-cv/add-cv.component").then(
+        (component) => component.AddCvComponent,
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "cv/:id",
+    loadComponent: () =>
+      import("./cv/details-cv/details-cv.component").then(
+        (component) => component.DetailsCvComponent,
+      ),
+  },
+  {
+    path: "rh",
+    loadComponent: () =>
+      import("./optimizationPattern/rh/rh.component").then(
+        (component) => component.RhComponent,
+      ),
+  },
   {
     path: "",
     component: FrontComponent,
     children: [
-      { path: "todo", component: TodoComponent },
-      { path: "word", component: MiniWordComponent },
-      { path: "ttc", component: TtcComponent },
-      { path: "currency", component: CountryCurrencySelectorComponent },
-      { path: "products-filter", component: ProductsFilterComponent },
-      { path: "autocomplete", component: AutocompleteComponent },
-
+      {
+        path: "todo",
+        loadComponent: () =>
+          import("./todo/todo/todo.component").then(
+            (component) => component.TodoComponent,
+          ),
+      },
+      {
+        path: "word",
+        loadComponent: () =>
+          import("./directives/mini-word/mini-word.component").then(
+            (component) => component.MiniWordComponent,
+          ),
+      },
+      {
+        path: "ttc",
+        loadComponent: () =>
+          import("./components/ttc/ttc.component").then(
+            (component) => component.TtcComponent,
+          ),
+      },
+      {
+        path: "currency",
+        loadComponent: () =>
+          import("./tp2/currency-selector/country-currency-selector.component").then(
+            (component) => component.CountryCurrencySelectorComponent,
+          ),
+      },
+      {
+        path: "products-filter",
+        loadComponent: () =>
+          import("./tp2/products-filter/products-filter.component").then(
+            (component) => component.ProductsFilterComponent,
+          ),
+      },
+      {
+        path: "autocomplete",
+        loadComponent: () =>
+          import("./cv/autocomplete/autocomplete.component").then(
+            (component) => component.AutocompleteComponent,
+          ),
+        data: { preload: true },
+      },
     ],
   },
   {
     path: "admin",
-    component: AdminComponent,
-    children: [{ path: "color", component: ColorComponent }],
+    loadComponent: () =>
+      import("./templates/admin/admin.component").then(
+        (component) => component.AdminComponent,
+      ),
+    children: [
+      {
+        path: "color",
+        loadComponent: () =>
+          import("./components/color/color.component").then(
+            (component) => component.ColorComponent,
+          ),
+      },
+    ],
   },
   { path: "**", component: NF404Component },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: CvPreloadingStrategy,
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
